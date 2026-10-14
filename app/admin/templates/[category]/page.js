@@ -1,0 +1,3 @@
+import { notFound } from 'next/navigation';import TemplateEditor from '../../../../components/TemplateEditor';import { getCategory } from '../../../../lib/categories';import { getDb } from '../../../../lib/db';import { defaultBlocks, safeJson } from '../../../../lib/content';
+export const dynamic='force-dynamic';
+export default async function TemplatePage({params}){const category=getCategory(params.category);if(!category)return notFound();const db=getDb();const [rows]=await db.query('SELECT blocks_json FROM templates WHERE category_key=? LIMIT 1',[category.key]);const blocks=rows[0]?safeJson(rows[0].blocks_json,defaultBlocks(category.key)):defaultBlocks(category.key);return <TemplateEditor category={category.key} name={category.name} initialBlocks={blocks}/>}
